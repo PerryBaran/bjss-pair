@@ -3,33 +3,44 @@ function calcLBTT(price) {
     return Math.floor(tax/100);
   };
 
+  const taxBands = [
+    {
+      lowerLimit: 145000,
+      rate: 2,
+    },
+    {
+      lowerLimit: 250000,
+      rate: 5,
+    },
+    {
+      lowerLimit: 325000,
+      rate: 10,
+    },
+    {
+      lowerLimit: 750000,
+      rate: 12,
+    },
+  ];
+  
+  if (price < taxBands[0].lowerLimit) return 0;
+
   let tax = 0;
 
-  if (price < 145000) {
-    return convertTax(tax);
+  const lastIndex = taxBands.length - 1;
+  for (let i = 0; i < lastIndex ; i++) {
+    const { lowerLimit, rate } = taxBands[i];
+    const upperLimit = taxBands[i + 1].lowerLimit;
+  
+    if (price < upperLimit) {
+      tax += (price - lowerLimit) * rate;
+      return convertTax(tax);
+    }
+    
+    tax += (upperLimit - lowerLimit) * rate;
   }
 
-  if (price >= 145000 && price < 250000) {
-    tax += (price - 145000) * 2;
-    return convertTax(tax);
-  }
-
-  tax += (250000 - 145000) * 2;
-
-  if (price >= 250000 && price < 325000) {
-    tax += (price - 250000) * 5;
-    return convertTax(tax);
-  }
-
-  tax += (325000 - 250000) * 5;
-
-  if (price >= 325000 && price < 750000) {
-    tax += (price - 325000) * 10;
-    return convertTax(tax);
-  }
-
-  tax += (750000 - 325000) * 10;
-  tax += (price - 750000) * 12;
+  const { lowerLimit, rate } = taxBands[lastIndex];
+  tax += (price - lowerLimit) * rate;
   return convertTax(tax);
 };
 

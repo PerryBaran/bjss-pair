@@ -1,7 +1,7 @@
 const calcLBTT = require("../calcLBTT");
 
 describe("calcLBTT", () => {
-  describe("buyer has: 1 house, personal use, owns no other properties, sell house when they buy new one", () => {
+  describe("buyer has: 1 property, personal use, sells house when they buy new one", () => {
     test("price < 145k", () => {
       expect(calcLBTT(10000)).toEqual(0);
     });
