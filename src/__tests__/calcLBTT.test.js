@@ -1,4 +1,4 @@
-const calcLBTT = require("../calcLBTT");
+const { calcLBTT } = require("../calcLBTT");
 
 describe("calcLBTT", () => {
   describe("buyer has: 1 property, personal use, sells house when they buy new one", () => {

@@ -1,8 +1,4 @@
 function calcLBTT(price) {
-  const convertTax = (tax) => {
-    return Math.floor(tax/100);
-  };
-
   const taxBands = [
     {
       lowerLimit: 145000,
@@ -24,24 +20,25 @@ function calcLBTT(price) {
   
   if (price < taxBands[0].lowerLimit) return 0;
 
-  let tax = 0;
-
-  const lastIndex = taxBands.length - 1;
-  for (let i = 0; i < lastIndex ; i++) {
+  let taxInPennies = 0;
+  let currentPrice = price;
+  for (let i = taxBands.length - 1; i >= 0; i--) {
     const { lowerLimit, rate } = taxBands[i];
-    const upperLimit = taxBands[i + 1].lowerLimit;
-  
-    if (price < upperLimit) {
-      tax += (price - lowerLimit) * rate;
-      return convertTax(tax);
+    if (currentPrice >= lowerLimit) {
+      taxInPennies += (currentPrice - lowerLimit) * rate;
+      currentPrice = lowerLimit;
     }
-    
-    tax += (upperLimit - lowerLimit) * rate;
   }
 
-  const { lowerLimit, rate } = taxBands[lastIndex];
-  tax += (price - lowerLimit) * rate;
-  return convertTax(tax);
+  return convertTaxPenniesToPounds(taxInPennies);
 };
 
-module.exports = calcLBTT;
+function calculatesAccuTax(upperLimit, lowerLimit, rate, tax) {
+  return tax + ((upperLimit - lowerLimit) * rate);
+};
+
+function convertTaxPenniesToPounds(tax) {
+  return Math.floor(tax/100);
+};
+
+module.exports = { calcLBTT, calculatesAccuTax};
